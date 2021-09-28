@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db:
+    container_name: db
+    image: postgres:12
+    environment:
+      POSTGRES_DB: 02-crud-hibernate-rest
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: azerty
+    volumes:
+      - postgresql_bin:/usr/lib/postgresql
+      - ./persons-schema-and-data.sql:/docker-entrypoint-initdb.d/init_db.sql
+    ports:
+      - 5432:5432
+    networks:
+      - db
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: azerty
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - postgresql_bin:/usr/lib/postgresql
+      - pgadmin_root_prefs:/root/.pgadmin
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - 5050:5050
+    networks:
+      - db
+networks:
+  db:
+    driver: bridge
+volumes:
+  pgadmin_root_prefs:
+    driver: local
+  postgresql_bin:
+    driver: local
+  pgadmin_data:
+    driver: local
