@@ -5,7 +5,7 @@ Prérequis:
 - il faut avoir JAVA_HOME configurée
 - maven récent avec MAVEN_HOME configurée
 - installer docker (avec WSL sur windows)
-- VS code avec les extensions java quarkus docker redhat
+- VS code avec les extensions java quarkus docker redhat gitlens
 - démarrer dans le terminal (interne à vscode) en mode developpement avec la commande mvn clean compile quarkus:dev
 - la configuration est dans le fichier application.properties
 - par defaut l'application tourne sur localhost:8080 (l'interface qui s'affiche contient un lien vers dev-ui qui liste les extensions/modules installés
