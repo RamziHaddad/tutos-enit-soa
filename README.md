@@ -15,3 +15,5 @@ Prérequis:
 si besoin de voir la BD avec pgadmin faire:
 - pg admin est configuré sur docker et se trouve sur le port 5050
 - première utilisation de pgadmin il faut configurer un nouveau serveur avec les paramètres par defaut et dont l'adresse est db
+
+pour voir d'autres exemples avec la doc alkler sur https://quarkus.io/guides/
