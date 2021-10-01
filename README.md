@@ -1,7 +1,7 @@
 # tutos-enit-soa
 Exemples rapides pour le module SOA
 Prérequis:
-- java 11 ou plus
+- java 11 ou plus.
 - il faut avoir JAVA_HOME configurée
 - maven récent avec MAVEN_HOME configurée
 - installer docker (avec WSL sur windows)
