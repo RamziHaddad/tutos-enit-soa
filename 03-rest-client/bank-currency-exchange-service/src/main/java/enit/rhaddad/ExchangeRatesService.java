@@ -7,9 +7,12 @@ import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@RegisterRestClient(baseUri = "http://localhost:8081")
+@RegisterRestClient(baseUri = "http://localhost:8081/exchange-rate")
 public interface ExchangeRatesService {
     @POST
-    @Path("/exchange-rate/value")
+    @Path("/value")
     BigDecimal getExchangeRateValue(RateRequestDTO request);
+    @POST
+    @Path("/info")
+    RateResponseDTO getExchangeRateInfo(RateRequestDTO request);
 }
