@@ -18,14 +18,24 @@ public class CurrencyExchangeResource {
     CurrencyExchangeRatesRepository currencyExchangeRatesService;
 
     @POST
-    @Path("/exchange-rate")
+    @Path("/exchange-rate/info")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ExchangeRateResponseDTO findExchangeRate(ExchangeRateRequestDTO request) throws UnknownCurrencyException {
+    public ExchangeRateResponseDTO findExchangeRateInfo(ExchangeRateRequestDTO request) throws UnknownCurrencyException {
         Currency from = Currency.getInstance(request.getFrom());
         Currency to = Currency.getInstance(request.getTo());
         BigDecimal rate = currencyExchangeRatesService.getExchangeRate(from, to);
         return new ExchangeRateResponseDTO(from,to,rate);
+    }
+    @POST
+    @Path("/exchange-rate/value")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public BigDecimal findExchangeRateValue(ExchangeRateRequestDTO request) throws UnknownCurrencyException {
+        Currency from = Currency.getInstance(request.getFrom());
+        Currency to = Currency.getInstance(request.getTo());
+        BigDecimal rate = currencyExchangeRatesService.getExchangeRate(from, to);
+        return rate;
     }
     @GET
     @Path("/currency-description/{currencyCode}")
