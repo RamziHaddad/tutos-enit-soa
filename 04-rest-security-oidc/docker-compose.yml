@@ -1,0 +1,37 @@
+version: '3.3'
+services:
+  keycloak:
+    image: jboss/keycloak:15.0.0
+    ports:
+      - "9900:8080"
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      #- KEYCLOAK_IMPORT=/tmp/realm-export.json
+      - DB_DATABASE=keycloakdb
+      - DB_USER=keycloakdb
+      - DB_PASSWORD=keycloakdb
+      - DB_ADDR=keycloakdb
+      - DB_VENDOR=postgres
+    volumes:
+      - ./config:/tmp
+    networks:
+      internal:
+    depends_on:
+      - keycloakdb
+  keycloakdb:
+    image: postgres:12
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=keycloakdb
+      - POSTGRES_PASSWORD=keycloakdb
+      - POSTGRES_DB=keycloakdb
+    volumes:
+      - keycloak-postgres:/var/lib/postgresql/data
+    networks:
+      internal:
+volumes:
+  keycloak-postgres:
+networks:
+  internal:
