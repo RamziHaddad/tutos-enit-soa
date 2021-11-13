@@ -24,6 +24,7 @@ public class PersonResourceV2 {
 
     @GET
     public List<Person> findall() {
+        System.out.println("getting all persons");
         return  personService.findAll();
     }
 

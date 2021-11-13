@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  keycloak:
+    image: jboss/keycloak:15.0.0
+    ports:
+      - "9900:8080"
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_IMPORT=/tmp/realm-export.json
+    volumes:
+      - ./config:/tmp
