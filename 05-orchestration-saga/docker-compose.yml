@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  barista:
+    container_name: barista_db
+    image: postgres:12
+    environment:
+      POSTGRES_DB: barista_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: azerty
+    ports:
+      - 5432:5432
+    networks:
+      - db
+  payment:
+    container_name: payment_db
+    image: postgres:12
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: azerty
+    ports:
+      - 5433:5432
+    networks:
+      - db
+  orders:
+    container_name: orders_db
+    image: postgres:12
+    environment:
+      POSTGRES_DB: orders_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: azerty
+    ports:
+      - 5434:5432
+    networks:
+      - db
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: azerty
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - postgresql_bin:/usr/lib/postgresql
+      - pgadmin_root_prefs:/root/.pgadmin
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - 5050:5050
+    networks:
+      - db
+networks:
+  db:
+    driver: bridge
+volumes:
+  pgadmin_root_prefs:
+    driver: local
+  postgresql_bin:
+    driver: local
+  pgadmin_data:
+    driver: local
