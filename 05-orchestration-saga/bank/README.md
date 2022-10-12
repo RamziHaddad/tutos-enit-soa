@@ -1,4 +1,10 @@
-# payment Project
+# Bank Project
+
+The paiment service isn't reliable
+- 50% chance the response will take long (causes a client timeout, make sure the payment microservice can handle it).
+- 50% the service will face an error and won't process the request (payment microservice should retry).
+--> only 25% of the requests will be processes instantly and correctly
+
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
