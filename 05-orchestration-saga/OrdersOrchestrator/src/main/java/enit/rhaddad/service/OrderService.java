@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import enit.rhaddad.api.dto.MakeOrderCommand;
+import enit.rhaddad.api.dto.MakeOrderItem;
 import enit.rhaddad.api.dto.MakePaymentCommand;
 import enit.rhaddad.api.dto.OrderItemViewDTO;
 import enit.rhaddad.domain.Order;
@@ -60,7 +61,7 @@ public class OrderService {
 
     @Transactional
     public void dispatchOrderToBarista(Order order) {
-        List<OrderItemViewDTO> items = order.getItems().stream().map(oi->new OrderItemViewDTO(oi.getCoffeeType(),oi.getQuantity())).toList();
+        List<MakeOrderItem> items = order.getItems().stream().map(oi->new MakeOrderItem(oi.getCoffeeType(),oi.getQuantity())).toList();
         MakeOrderCommand cmd = new MakeOrderCommand(order.getId(), order.getCustomer(), items);
         baristaService.makeOrder(cmd);
         order.setStatus(OrderStatus.DISPATCHED);
@@ -91,7 +92,7 @@ public class OrderService {
             }
         });
     }
-    @Scheduled(every="10s",concurrentExecution = ConcurrentExecution.SKIP)
+    @Scheduled(every="30s",concurrentExecution = ConcurrentExecution.SKIP)
     public void resumeOrdersWaitingForPaymentSecondTry(){
         Optional<Order> o = repo.queryNextPaymentFailedOrder();
         o.ifPresent(order->{
