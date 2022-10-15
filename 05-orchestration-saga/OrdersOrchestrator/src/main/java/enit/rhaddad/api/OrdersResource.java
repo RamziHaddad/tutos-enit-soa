@@ -13,11 +13,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import enit.rhaddad.api.dto.CreateOrderCommand;
-import enit.rhaddad.api.dto.MakeOrderPaymentCommand;
 import enit.rhaddad.api.dto.OrderViewDTO;
 import enit.rhaddad.domain.Order;
 import enit.rhaddad.domain.OrderItem;
-import enit.rhaddad.domain.OrderStatus;
 import enit.rhaddad.service.OrderService;
 
 @Path("/barista")

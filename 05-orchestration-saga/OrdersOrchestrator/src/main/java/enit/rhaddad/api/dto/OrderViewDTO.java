@@ -10,6 +10,6 @@ import enit.rhaddad.domain.OrderStatus;
 
 public record OrderViewDTO(UUID id,String customer,List<OrderItemViewDTO> items,LocalDateTime receivedAt, OrderStatus status, BigDecimal price) {
     public OrderViewDTO(Order order){
-        this(order.getId(),order.getCustomer(),order.getItems().stream().map(i->new OrderItemViewDTO(i.getCoffeeType(), i.getQuantity(),i.getQuantityReady())).toList(),order.getReceivedAt(),order.getStatus(),order.getPrice());
+        this(order.getId(),order.getCustomer(),order.getItems().stream().map(i->new OrderItemViewDTO(i.getCoffeeType(), i.getQuantity())).toList(),order.getReceivedAt(),order.getStatus(),order.getPrice());
     }
 }
