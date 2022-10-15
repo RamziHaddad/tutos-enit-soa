@@ -18,7 +18,7 @@ import enit.rhaddad.domain.Order;
 import enit.rhaddad.domain.OrderItem;
 import enit.rhaddad.service.OrderService;
 
-@Path("/barista")
+@Path("/orders")
 public class OrdersResource {
     
     @Inject
