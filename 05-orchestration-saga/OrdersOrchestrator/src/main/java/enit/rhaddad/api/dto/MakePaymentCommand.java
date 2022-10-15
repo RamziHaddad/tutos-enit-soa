@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 
-    public record MakePaymentCommand(UUID id, BigDecimal price, int cardNumber, int cardCode) {
+    public record MakePaymentCommand(UUID transactionId, BigDecimal amount, int cardNumber, int cardCode) {
     }
 
 

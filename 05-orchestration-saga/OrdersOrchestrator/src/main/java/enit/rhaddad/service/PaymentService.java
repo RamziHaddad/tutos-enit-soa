@@ -8,7 +8,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import enit.rhaddad.api.dto.MakePaymentCommand;
 
 @Path("/payment")
-@RegisterRestClient
+@RegisterRestClient(configKey="payment-api")
 public interface PaymentService {
     @POST
     public void makePayment(MakePaymentCommand cmd);

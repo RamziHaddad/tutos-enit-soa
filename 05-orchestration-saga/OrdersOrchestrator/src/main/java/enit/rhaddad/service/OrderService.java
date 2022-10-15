@@ -16,10 +16,8 @@ import enit.rhaddad.api.dto.MakeOrderCommand;
 import enit.rhaddad.api.dto.MakePaymentCommand;
 import enit.rhaddad.api.dto.OrderItemViewDTO;
 import enit.rhaddad.domain.Order;
-import enit.rhaddad.domain.OrderItem;
 import enit.rhaddad.domain.OrderStatus;
 import enit.rhaddad.repository.OrderRepository;
-import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.scheduler.Scheduled;
 import io.quarkus.scheduler.Scheduled.ConcurrentExecution;
 
@@ -47,7 +45,7 @@ public class OrderService {
             throw new RuntimeException("couldn't determine price");
         }else{
             order.setPrice(price.get());
-            repo.updateOrder(order);
+            order.setStatus(OrderStatus.RECEIVED);
         }
         repo.persistOrder(order);
     }
@@ -80,7 +78,6 @@ public class OrderService {
     }
 
     @Scheduled(every="10s",concurrentExecution = ConcurrentExecution.SKIP)
-    @Transactional
     public void resumeOrdersWaitingForPayment(){
         Optional<Order> o = repo.queryNextReceivedOrder();
         o.ifPresent(order->{
@@ -88,13 +85,13 @@ public class OrderService {
                 processPayment(order);
                 order.setStatus(OrderStatus.PAID);
             }catch(Exception e){
-                order.setStatus(OrderStatus.PAIMENT_FAILED);
+                order.setStatus(OrderStatus.PAYMENT_FAILED);
                 repo.updateOrder(order);
+                e.printStackTrace();
             }
         });
     }
     @Scheduled(every="10s",concurrentExecution = ConcurrentExecution.SKIP)
-    @Transactional
     public void resumeOrdersWaitingForPaymentSecondTry(){
         Optional<Order> o = repo.queryNextPaymentFailedOrder();
         o.ifPresent(order->{
@@ -109,7 +106,6 @@ public class OrderService {
         });
     }
     @Scheduled(every="10s",concurrentExecution = ConcurrentExecution.SKIP)
-    @Transactional
     public void resumeOrdersWaitingForDispatchToBarista(){
         Optional<Order> o = repo.queryNextPaidOrder();
         o.ifPresent(order->{
@@ -119,7 +115,6 @@ public class OrderService {
         });
     }
     @Scheduled(every="10s",concurrentExecution = ConcurrentExecution.SKIP)
-    @Transactional
     public void checkDispatcheOrdersWaitingForBarista(){
         Optional<Order> o = repo.queryNextDispatchedOrder();
         o.ifPresent(order->{

@@ -12,7 +12,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import enit.rhaddad.api.dto.MakeOrderCommand;
 
 @Path("/barista")
-@RegisterRestClient
+@RegisterRestClient(configKey="barista-api")
 public interface BaristaService {
     @POST
     public void makeOrder(MakeOrderCommand cmd);

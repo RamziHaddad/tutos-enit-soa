@@ -34,7 +34,7 @@ public class OrderRepository {
     }
     public Optional<Order> queryNextReceivedOrder() {
         try{
-            Order o = em.createQuery("from Order o where o.status='RECEIVED' or o.status='PARTIALLY_READY' order by o.receivedAt",Order.class).getSingleResult();
+            Order o = em.createQuery("from Order o where o.status='RECEIVED' order by o.receivedAt",Order.class).getSingleResult();
             return Optional.of(o);
         }catch(Exception e){
             return Optional.empty();
