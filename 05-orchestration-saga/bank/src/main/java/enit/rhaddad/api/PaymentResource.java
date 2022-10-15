@@ -12,29 +12,35 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import enit.rhaddad.domain.Payment;
 import enit.rhaddad.service.DuplicatePaymentException;
 import enit.rhaddad.service.PaymentService;
 
 @Path("/payment")
 public class PaymentResource {
-    
+
+    @ConfigProperty(name="app.bank.latency-ms",defaultValue = "0")// 0 temps de latence avant de traiter la demande en ms
+    long latencyMs;
+    @ConfigProperty(name="app.bank.failure-probability",defaultValue = "0")//entre 0 et 100
+    int failureProbability;
+
     @Inject
     PaymentService paymentService;
 
     @POST
     @Transactional
     public Response makeNewPayment(MakePaymentCommand cmd){
-        double latencyProbability = Math.random();
-        if(latencyProbability>0.5d){//50% des appels seront lents
+        if(latencyMs>0){
             try {
-                Thread.sleep(100000);
+                Thread.sleep(latencyMs);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        double successProbability = Math.random();
-        if(successProbability>0.5d){//50% de chance que le service de paiement se plante et ne peut pas faire le paiement
+        double random = Math.random();
+        if(random*100<failureProbability){//le service de paiement se plante et ne peut pas faire le paiement
             throw new RuntimeException();
         } 
         if(cmd.cardNumber()==cmd.cardCode()){
