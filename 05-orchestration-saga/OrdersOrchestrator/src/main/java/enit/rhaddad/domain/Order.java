@@ -1,5 +1,6 @@
 package enit.rhaddad.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import lombok.Data;
 @Table(name = "Orders")
 public class Order{
     @Id
-    //@GeneratedValue
+    @GeneratedValue
     private UUID id;
     @OneToMany(mappedBy="order",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItem> items = new ArrayList<>();
@@ -33,16 +34,19 @@ public class Order{
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.RECEIVED;
     private LocalDateTime receivedAt = LocalDateTime.now(ZoneId.of("UTC"));
-    
+    private BigDecimal price = BigDecimal.ZERO;
+    private int cardNumber;
+    private int cardCode;
 
     //pour JPA
     public Order() {
     }
     
 
-    public Order(UUID id, String customer) {
-        this.id = id;
+    public Order(String customer, int cardNumber,int cardCode) {
         this.customer = customer;
+        this.cardNumber = cardNumber;
+        this.cardCode = cardCode;
     }
 
     public void addOrderItem(OrderItem oi){
@@ -55,23 +59,6 @@ public class Order{
         }
     }
 
-    public void incrementReady(CoffeeType type){
-        for(OrderItem item : items){
-            if(item.getCoffeeType() ==type){
-                item.incrementReady();
-                status=OrderStatus.PARTIALLY_READY;
-            }
-        }
-        updateStatusIfReady();
-    }
-    public void updateStatusIfReady(){
-        for(OrderItem item : items){
-            if(!item.isReady()){
-                return ;
-            }
-        }
-        status=OrderStatus.READY;
-    }
     public OrderStatus getStatus(){
         return status;
     }

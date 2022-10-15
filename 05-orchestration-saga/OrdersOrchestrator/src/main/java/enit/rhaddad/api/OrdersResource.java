@@ -13,53 +13,41 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import enit.rhaddad.api.dto.CreateOrderCommand;
+import enit.rhaddad.api.dto.MakeOrderPaymentCommand;
 import enit.rhaddad.api.dto.OrderViewDTO;
 import enit.rhaddad.domain.Order;
 import enit.rhaddad.domain.OrderItem;
-import enit.rhaddad.service.BaristaService;
+import enit.rhaddad.domain.OrderStatus;
+import enit.rhaddad.service.OrderService;
 
 @Path("/barista")
-public class BaristaResource {
+public class OrdersResource {
     
     @Inject
-    BaristaService barista;
+    OrderService orderService;
 
     @POST
     @Transactional
-    public OrderViewDTO newOrder(CreateOrderCommand cmd){
-        Order order = new Order(cmd.orderId(),cmd.customer());
+    public OrderViewDTO placeNewOrder(CreateOrderCommand cmd){
+        Order order = new Order(cmd.customer(),cmd.cardNumber(),cmd.cardCode());
         List<OrderItem> items = cmd.items().stream().map(oiDTO->new OrderItem(oiDTO.coffeeType(),oiDTO.quantity())).toList();
         order.addItems(items);
-        barista.receiveNewOrder(order);
-
-        //List<OrderItemViewDTO> itemsViewsDTO = order.getItems().stream().map(i->new OrderItemViewDTO(i.getCoffeeType(), i.getQuantity(),i.getQuantityReady())).toList();
-        //return new OrderViewDTO(order.getId(),order.getCustomer(),itemsViewsDTO,order.getReceivedAt(),order.getStatus());
+        orderService.receiveNewOrder(order);
         return new OrderViewDTO(order);
     }
 
     @GET
     public List<OrderViewDTO> allOrder(){
-        List<Order> orders = barista.getAllOrders();
+        List<Order> orders = orderService.getAllOrders();
         return orders.stream().map(OrderViewDTO::new).toList();
     }
 
     @GET
     @Path("/{id}")
     public Response orderById(@PathParam("id") UUID id){
-        Optional<Order> o = barista.getOrderById(id);
+        Optional<Order> o = orderService.getOrderById(id);
         if(o.isPresent()){
             return Response.status(Response.Status.OK).entity(new OrderViewDTO(o.get())).build();
-        }else{
-            return Response.status(Response.Status.NOT_FOUND).entity(id).build();
-        }
-    }
-
-    @GET
-    @Path("/{id}/status")
-    public Response orderStatusById(@PathParam("id") UUID id){
-        Optional<Order> o = barista.getOrderById(id);
-        if(o.isPresent()){
-            return Response.status(Response.Status.OK).entity(o.get().getStatus().toString()).build();
         }else{
             return Response.status(Response.Status.NOT_FOUND).entity(id).build();
         }

@@ -19,7 +19,7 @@ public class OrderRepository {
 
     
     public void persistOrder(Order order){
-        em.persist(order);
+        em.merge(order);
     }
     public void updateOrder(Order order){
         em.merge(order);

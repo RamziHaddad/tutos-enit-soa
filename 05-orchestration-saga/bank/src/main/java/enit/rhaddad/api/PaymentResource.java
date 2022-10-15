@@ -43,7 +43,8 @@ public class PaymentResource {
                 paymentService.makeNewPayment(p);
                 return Response.status(Response.Status.OK).build();
             } catch (DuplicatePaymentException e) {
-                return Response.status(Response.Status.CONFLICT).build();
+                //already paid, returning ok
+                return Response.status(Response.Status.OK).build();
             }
         }
         return Response.status(Response.Status.EXPECTATION_FAILED).build();

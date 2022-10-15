@@ -12,11 +12,11 @@ services:
       - 5432:5432
     networks:
       - db
-  payment:
-    container_name: payment_db
+  bank:
+    container_name: bank_db
     image: postgres:12
     environment:
-      POSTGRES_DB: payment_db
+      POSTGRES_DB: bank_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: azerty
     ports:
