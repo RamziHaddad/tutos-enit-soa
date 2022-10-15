@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Positive;
 
 import lombok.Data;
 
@@ -22,6 +23,7 @@ public class OrderItem {
     @ManyToOne
     private Order order;
     private CoffeeType coffeeType;
+    @Positive
     private int quantity;
     private int quantityReady = 0;
 

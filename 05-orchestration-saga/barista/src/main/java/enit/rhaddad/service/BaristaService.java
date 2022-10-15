@@ -40,14 +40,13 @@ public class BaristaService {
             for(OrderItem item:order.getItems()){
                 while(!item.isReady()){
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(1000);
                         order.incrementReady(item.getCoffeeType());
                         repo.updateOrder(order);
                     } catch (Exception e) {
                         QuarkusTransaction.rollback();
                         e.printStackTrace();
-                    } 
-                        
+                    }    
                 }
             }
         });
