@@ -1,7 +1,6 @@
 package enit.rhaddad.service;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -21,7 +20,7 @@ public class OutboxService {
     @Inject
     OutboxRepository repo;
     @Inject
-    @Channel("orders")
+    @Channel("placed-orders")
     Emitter<BaseEvent> eventsPublisher;
 
     @Transactional
@@ -30,7 +29,7 @@ public class OutboxService {
         //can publish here to avoid lag but should consider out of order events (e.g. receive order cancellation before reception).
     }
 
-    @Scheduled(every = "30s", delay = 60,delayUnit = TimeUnit.SECONDS,concurrentExecution = ConcurrentExecution.SKIP)
+    @Scheduled(every = "10s",concurrentExecution = ConcurrentExecution.SKIP)
     public void emitEvents(){
         List<BaseEvent> events = repo.queryNextWaitingOutboxEvent();
         events.stream().forEach(e->{

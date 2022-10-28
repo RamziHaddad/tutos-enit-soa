@@ -4,34 +4,21 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 
 import enit.rhaddad.domain.events.BaseEvent;
 
 @ApplicationScoped
 public class OutboxRepository {
+    @Inject
     EntityManager em;
+    @Inject
     private ObjectMapper jsonMapper;
-
-
-    
-    public OutboxRepository(ObjectMapper jsonMapper,EntityManager em) {
-        this.em=em;
-        this.jsonMapper = jsonMapper;
-        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
-            .allowIfSubType("enit.rhaddad.domain.events")
-            .allowIfSubType("java.math")
-            .allowIfSubType("java.util")
-            .build();
-        jsonMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
-    }
-
 
 
     @Transactional
