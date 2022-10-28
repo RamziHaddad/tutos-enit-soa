@@ -1,0 +1,98 @@
+version: '3'
+
+services:
+  zookeeper:
+    image: strimzi/kafka:0.19.0-kafka-2.5.0
+    command: [
+      "sh", "-c",
+      "bin/zookeeper-server-start.sh config/zookeeper.properties"
+    ]
+    ports:
+      - "2181:2181"
+    environment:
+      LOG_DIR: /tmp/logs
+  kafka:
+    image: strimzi/kafka:0.19.0-kafka-2.5.0
+    command: [
+      "sh", "-c",
+      "bin/kafka-server-start.sh config/server.properties --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT}"
+    ]
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      LOG_DIR: "/tmp/logs"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  barista:
+    container_name: barista_db
+    image: postgres:12
+    environment:
+      POSTGRES_DB: barista_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: azerty
+    ports:
+      - 5432:5432
+    networks:
+      - db
+  bank:
+    container_name: bank_db
+    image: postgres:12
+    environment:
+      POSTGRES_DB: bank_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: azerty
+    ports:
+      - 5433:5432
+    networks:
+      - db
+  orders:
+    container_name: orders_db
+    image: postgres:12
+    environment:
+      POSTGRES_DB: orders_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: azerty
+    ports:
+      - 5434:5432
+    networks:
+      - db
+  payments:
+    container_name: payments
+    image: postgres:12
+    environment:
+      POSTGRES_DB: payments_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: azerty
+    ports:
+      - 5435:5432
+    networks:
+      - db
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: azerty
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - postgresql_bin:/usr/lib/postgresql
+      - pgadmin_root_prefs:/root/.pgadmin
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - 5050:5050
+    networks:
+      - db
+networks:
+  db:
+    driver: bridge
+volumes:
+  pgadmin_root_prefs:
+    driver: local
+  postgresql_bin:
+    driver: local
+  pgadmin_data:
+    driver: local

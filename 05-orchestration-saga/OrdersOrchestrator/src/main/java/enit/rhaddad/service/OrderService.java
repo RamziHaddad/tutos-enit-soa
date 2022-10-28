@@ -15,7 +15,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import enit.rhaddad.api.dto.MakeOrderCommand;
 import enit.rhaddad.api.dto.MakeOrderItem;
 import enit.rhaddad.api.dto.MakePaymentCommand;
-import enit.rhaddad.api.dto.OrderItemViewDTO;
 import enit.rhaddad.domain.Order;
 import enit.rhaddad.domain.OrderStatus;
 import enit.rhaddad.repository.OrderRepository;
@@ -92,7 +91,7 @@ public class OrderService {
             }
         });
     }
-    @Scheduled(every="30s",concurrentExecution = ConcurrentExecution.SKIP)
+    @Scheduled(every="60s",concurrentExecution = ConcurrentExecution.SKIP)
     public void resumeOrdersWaitingForPaymentSecondTry(){
         Optional<Order> o = repo.queryNextPaymentFailedOrder();
         o.ifPresent(order->{
