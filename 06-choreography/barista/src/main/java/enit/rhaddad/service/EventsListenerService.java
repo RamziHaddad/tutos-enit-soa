@@ -1,4 +1,4 @@
-package enit.rhaddad.repository;
+package enit.rhaddad.service;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,10 +12,9 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import enit.rhaddad.domain.Order;
 import enit.rhaddad.domain.OrderItem;
 import enit.rhaddad.domain.events.OrderPlaced;
-import enit.rhaddad.service.BaristaService;
 
 @ApplicationScoped
-public class InboxService {
+public class EventsListenerService {
     
 
     @Inject
