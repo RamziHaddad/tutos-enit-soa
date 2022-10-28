@@ -11,7 +11,8 @@ import javax.transaction.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import enit.rhaddad.domain.events.BaseEvent;
+import enit.rhaddad.domain.events.Event;
+import enit.rhaddad.domain.events.OrderPlaced;
 
 @ApplicationScoped
 public class OutboxRepository {
@@ -22,7 +23,7 @@ public class OutboxRepository {
 
 
     @Transactional
-    public void persist(BaseEvent ev){
+    public void persist(Event ev){
         String payload;
         try {
             payload = jsonMapper.writeValueAsString(ev);
@@ -32,11 +33,11 @@ public class OutboxRepository {
             throw new RuntimeException(e.getMessage());
         }
     }
-    public List<BaseEvent> queryNextWaitingOutboxEvent() {
+    public List<Event> queryNextWaitingOutboxEvent() {
         List<OutboxEvent> oevents = em.createQuery("from OutboxEvent o where o.sent=false order by o.createdAt",OutboxEvent.class).getResultList();
         return oevents.stream().map(oe->{
             try {
-                return jsonMapper.readValue(oe.getPayload(), BaseEvent.class);
+                return (Event) jsonMapper.readValue(oe.getPayload(), OrderPlaced.class);
             } catch (Exception e) {
                throw new RuntimeException(e.getMessage());
             }

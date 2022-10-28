@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
-import enit.rhaddad.domain.events.BaseEvent;
+import enit.rhaddad.domain.events.Event;
 import enit.rhaddad.repository.OutboxRepository;
 import io.quarkus.scheduler.Scheduled;
 import io.quarkus.scheduler.Scheduled.ConcurrentExecution;
@@ -21,17 +21,17 @@ public class OutboxService {
     OutboxRepository repo;
     @Inject
     @Channel("placed-orders")
-    Emitter<BaseEvent> eventsPublisher;
+    Emitter<Event> eventsPublisher;
 
     @Transactional
-    public void publish(BaseEvent e){
+    public void publish(Event e){
         repo.persist(e);
         //can publish here to avoid lag but should consider out of order events (e.g. receive order cancellation before reception).
     }
 
     @Scheduled(every = "10s",concurrentExecution = ConcurrentExecution.SKIP)
     public void emitEvents(){
-        List<BaseEvent> events = repo.queryNextWaitingOutboxEvent();
+        List<Event> events = repo.queryNextWaitingOutboxEvent();
         events.stream().forEach(e->{
             eventsPublisher.send(e);
             repo.markAsSent(e.getEventId());
