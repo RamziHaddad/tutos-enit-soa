@@ -24,18 +24,6 @@ public class BaristaResource {
     @Inject
     BaristaService barista;
 
-    @POST
-    @Transactional
-    public OrderViewDTO newOrder(CreateOrderCommand cmd){
-        Order order = new Order(cmd.orderId(),cmd.customer());
-        List<OrderItem> items = cmd.items().stream().map(oiDTO->new OrderItem(oiDTO.coffeeType(),oiDTO.quantity())).toList();
-        order.addItems(items);
-        barista.receiveNewOrder(order);
-
-        //List<OrderItemViewDTO> itemsViewsDTO = order.getItems().stream().map(i->new OrderItemViewDTO(i.getCoffeeType(), i.getQuantity(),i.getQuantityReady())).toList();
-        //return new OrderViewDTO(order.getId(),order.getCustomer(),itemsViewsDTO,order.getReceivedAt(),order.getStatus());
-        return new OrderViewDTO(order);
-    }
 
     @GET
     public List<OrderViewDTO> allOrder(){
