@@ -37,17 +37,6 @@ services:
       - 5432:5432
     networks:
       - db
-  bank:
-    container_name: bank_db
-    image: postgres:12
-    environment:
-      POSTGRES_DB: bank_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: azerty
-    ports:
-      - 5433:5432
-    networks:
-      - db
   orders:
     container_name: orders_db
     image: postgres:12
@@ -57,17 +46,6 @@ services:
       POSTGRES_PASSWORD: azerty
     ports:
       - 5434:5432
-    networks:
-      - db
-  payments:
-    container_name: payments
-    image: postgres:12
-    environment:
-      POSTGRES_DB: payments_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: azerty
-    ports:
-      - 5435:5432
     networks:
       - db
   pgadmin:
