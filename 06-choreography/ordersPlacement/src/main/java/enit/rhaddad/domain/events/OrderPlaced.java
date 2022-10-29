@@ -23,7 +23,7 @@ public class OrderPlaced extends Event{
 
     public OrderPlaced(Order order) {
         super("OrderPlaced","Order",order.getId().toString());
-        this.items = order.getItems().stream().collect(Collectors.groupingBy(OrderItem::getCoffeeType, Collectors.counting()));
+        this.items = order.getItems().stream().collect(Collectors.groupingBy(OrderItem::getCoffeeType, Collectors.summingLong(OrderItem::getQuantity)));
         this.price = order.getPrice();
         this.customer = order.getCustomer();
 
